@@ -55,20 +55,77 @@ System-Health-Monitor/
 
 ## Setup
 
-**Requirements:** Python 3.9+
+**Requirements:** Python 3.9+ and `git`.
+
+### macOS
 
 ```bash
+# 0. Install Python 3 if you don't have it (Homebrew: https://brew.sh)
+brew install python git
+
+# 1. Clone
+git clone https://github.com/ramezian1/System-Health-Monitor.git
+cd System-Health-Monitor
+
+# 2. Create and activate a virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# 3. Install dependencies
+pip install -r requirements.txt
+```
+
+> On macOS, `psutil` cannot read CPU **temperature**, so that field is simply omitted —
+> everything else (CPU %, per-core, RAM, disk, network, processes) works normally.
+
+### Linux (Debian / Ubuntu / Raspberry Pi OS)
+
+```bash
+# 0. Install Python 3 + venv if needed
+sudo apt update && sudo apt install -y python3 python3-venv python3-pip git
+
+# 1. Clone
+git clone https://github.com/ramezian1/System-Health-Monitor.git
+cd System-Health-Monitor
+
+# 2. Create and activate a virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# 3. Install dependencies
+pip install -r requirements.txt
+```
+
+> On Fedora/RHEL use `sudo dnf install python3 python3-pip git`; on Arch use
+> `sudo pacman -S python git`. CPU temperature is available on Linux where the kernel
+> exposes sensors.
+
+### Windows
+
+Run these in **PowerShell**:
+
+```powershell
+# 0. Install Python 3 + git if needed (or download from python.org / git-scm.com)
+winget install Python.Python.3 Git.Git
+
 # 1. Clone
 git clone https://github.com/ramezian1/System-Health-Monitor.git
 cd System-Health-Monitor
 
 # 2. Create and activate a virtual environment
 python -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
+venv\Scripts\Activate.ps1        # Command Prompt instead: venv\Scripts\activate.bat
 
 # 3. Install dependencies
 pip install -r requirements.txt
 ```
+
+> If PowerShell blocks `Activate.ps1` with a script-execution error, allow signed local
+> scripts for your user once: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, then
+> retry. Like macOS, `psutil` cannot read CPU **temperature** on Windows, so that field is
+> omitted; all other metrics work. (The `yes > /dev/null` load test below is Unix-only.)
+
+To leave the virtual environment later, run `deactivate`.
 
 ## Usage
 
@@ -141,14 +198,55 @@ All require an authenticated session.
 
 ## Deployment notes
 
-For a long-running deployment (VPS / Raspberry Pi), run it under a process manager such as
-`systemd` or `supervisor`, set the environment variables above, and put it behind a reverse
-proxy (nginx/Caddy) with HTTPS. The app already binds to `0.0.0.0:5000` and uses an
-eventlet async worker, so it can serve WebSocket traffic directly.
+For a long-running deployment, run it under a process manager such as `systemd` so it starts
+on boot and restarts on failure. The app binds to `0.0.0.0:5000` and uses an eventlet async
+worker, so it can serve WebSocket traffic directly. Ready-made files live in [`deploy/`](deploy/).
 
 > Some metrics depend on the platform: CPU temperature requires sensors the OS exposes, and
 > a few process/connection details may need elevated privileges. The app degrades gracefully
 > and simply omits anything unavailable.
+
+### Raspberry Pi (recommended — monitors the Pi itself, 24/7)
+
+Run these on the Pi (assumes the default `pi` user and a clone at `/home/pi/System-Health-Monitor`).
+
+```bash
+# 1. Clone and set up the app
+git clone https://github.com/ramezian1/System-Health-Monitor.git
+cd System-Health-Monitor
+python -m venv venv
+venv/bin/pip install -r requirements.txt
+
+# 2. Create your secrets file (git-ignored)
+cp deploy/system-health-monitor.env.example deploy/system-health-monitor.env
+# Generate a secret key and paste it into the file, then set a real username/password:
+python -c "import secrets; print(secrets.token_hex(32))"
+nano deploy/system-health-monitor.env
+
+# 3. Install and start the systemd service
+sudo cp deploy/system-health-monitor.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now system-health-monitor
+
+# 4. Check it's running
+systemctl status system-health-monitor
+```
+
+Now open `http://<your-pi-ip>:5000` from any device on your network and log in.
+
+Useful commands:
+
+```bash
+sudo systemctl restart system-health-monitor   # restart after a config/code change
+journalctl -u system-health-monitor -f         # follow live logs
+```
+
+> If you cloned to a different path or use a non-`pi` user, edit the `User`, `WorkingDirectory`,
+> `EnvironmentFile`, and `ExecStart` lines in `deploy/system-health-monitor.service` to match.
+
+**Optional — reach it on port 80 / add HTTPS:** put nginx in front using
+[`deploy/nginx.conf.example`](deploy/nginx.conf.example), then add a free Let's Encrypt
+certificate with `certbot` if the Pi is reachable from a domain.
 
 ---
 
