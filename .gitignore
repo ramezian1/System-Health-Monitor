@@ -11,6 +11,9 @@ env/
 
 .env
 .env.*
+# Deploy secrets — keep the real env file out of git, but track the *.example
+deploy/*.env
+!deploy/*.env.example
 instance/
 
 .DS_Store

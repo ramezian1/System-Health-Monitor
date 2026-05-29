@@ -1,0 +1,22 @@
+[Unit]
+Description=System Health Monitor dashboard
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Adjust User/Group and paths if you cloned somewhere other than /home/pi
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/System-Health-Monitor
+EnvironmentFile=/home/pi/System-Health-Monitor/deploy/system-health-monitor.env
+ExecStart=/home/pi/System-Health-Monitor/venv/bin/python app.py
+Restart=always
+RestartSec=5
+
+# Light hardening — keep these relaxed so psutil can read system metrics
+NoNewPrivileges=true
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target
