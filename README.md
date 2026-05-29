@@ -1,5 +1,7 @@
 # 🖥️ System Health Monitor
 
+> © 2026 Robert Mezian. All rights reserved.
+
 A real-time, web-based dashboard for monitoring the health of any machine it runs on —
 CPU, memory, disk, network, and processes — pushed live to your browser over WebSockets,
 with threshold alerting and historical trends.
@@ -292,3 +294,7 @@ certificate with `certbot` if the Pi is reachable from a domain.
 ## License
 
 See [LICENSE](LICENSE).
+
+---
+
+<p align="center">© 2026 Robert Mezian. All rights reserved.</p>
