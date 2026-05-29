@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>System Health Monitor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ── Top navigation ─────────────────────────────────────── -->
+<nav class="navbar">
+  <div class="navbar-brand">
+    <span class="nav-icon">🖥️</span>
+    <span>System Health Monitor</span>
+  </div>
+  <div class="navbar-actions">
+    <span id="connection-status" class="badge badge-offline">Connecting…</span>
+    <button id="theme-toggle" class="btn-icon" title="Toggle theme">🌙</button>
+    <a href="{{ url_for('logout') }}" class="btn-secondary">Logout</a>
+  </div>
+</nav>
+
+<!-- ── Alert banner ───────────────────────────────────────── -->
+<div id="alert-banner" class="alert-banner hidden"></div>
+
+<!-- ── Main layout ───────────────────────────────────────── -->
+<main class="container">
+
+  <!-- Stat cards -->
+  <section class="stat-cards">
+    <div class="stat-card" id="card-cpu">
+      <div class="stat-label">CPU Usage</div>
+      <div class="stat-value" id="stat-cpu">—</div>
+      <div class="stat-sub" id="stat-cpu-sub"></div>
+      <div class="stat-bar"><div class="stat-bar-fill" id="bar-cpu"></div></div>
+    </div>
+    <div class="stat-card" id="card-ram">
+      <div class="stat-label">Memory</div>
+      <div class="stat-value" id="stat-ram">—</div>
+      <div class="stat-sub" id="stat-ram-sub"></div>
+      <div class="stat-bar"><div class="stat-bar-fill" id="bar-ram"></div></div>
+    </div>
+    <div class="stat-card" id="card-disk">
+      <div class="stat-label">Disk (root)</div>
+      <div class="stat-value" id="stat-disk">—</div>
+      <div class="stat-sub" id="stat-disk-sub"></div>
+      <div class="stat-bar"><div class="stat-bar-fill" id="bar-disk"></div></div>
+    </div>
+    <div class="stat-card" id="card-net">
+      <div class="stat-label">Network</div>
+      <div class="stat-value" id="stat-net-recv">—</div>
+      <div class="stat-sub" id="stat-net-sub"></div>
+      <div class="stat-bar"><div class="stat-bar-fill" id="bar-net"></div></div>
+    </div>
+  </section>
+
+  <!-- Charts row 1 -->
+  <section class="charts-row">
+    <div class="chart-card chart-wide">
+      <div class="chart-header">
+        <span>CPU Usage — Last 60 s</span>
+        <span id="cpu-cores-label" class="chart-badge"></span>
+      </div>
+      <canvas id="chart-cpu"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">Memory</div>
+      <canvas id="chart-ram"></canvas>
+      <div id="ram-legend" class="ram-legend"></div>
+    </div>
+  </section>
+
+  <!-- Charts row 2 -->
+  <section class="charts-row">
+    <div class="chart-card">
+      <div class="chart-header">Disk Usage</div>
+      <canvas id="chart-disk"></canvas>
+    </div>
+    <div class="chart-card chart-wide">
+      <div class="chart-header">Network — Last 60 s</div>
+      <canvas id="chart-net"></canvas>
+    </div>
+  </section>
+
+  <!-- Process table + Alert history -->
+  <section class="bottom-row">
+    <div class="table-card">
+      <div class="table-header">
+        <span>Top Processes</span>
+        <div class="tab-group">
+          <button class="tab-btn active" id="tab-cpu-btn" onclick="switchTab('cpu')">By CPU</button>
+          <button class="tab-btn" id="tab-ram-btn" onclick="switchTab('ram')">By RAM</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="process-table">
+          <thead>
+            <tr>
+              <th>PID</th><th>Name</th><th>CPU %</th><th>RAM %</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="process-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">Alert History</div>
+      <div class="table-wrap">
+        <table id="alert-table">
+          <thead>
+            <tr><th>Time</th><th>Metric</th><th>Value</th><th>Threshold</th></tr>
+          </thead>
+          <tbody id="alert-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Historical charts -->
+  <section class="chart-card history-card">
+    <div class="chart-header">
+      <span>Historical Trend</span>
+      <div class="tab-group">
+        <button class="tab-btn active" onclick="loadHistory(1)">1h</button>
+        <button class="tab-btn" onclick="loadHistory(6)">6h</button>
+        <button class="tab-btn" onclick="loadHistory(24)">24h</button>
+      </div>
+    </div>
+    <canvas id="chart-history"></canvas>
+  </section>
+
+</main>
+
+<script>
+  const THRESHOLDS = {{ thresholds | tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
