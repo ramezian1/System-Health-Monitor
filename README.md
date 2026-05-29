@@ -55,20 +55,52 @@ System-Health-Monitor/
 
 ## Setup
 
-**Requirements:** Python 3.9+
+**Requirements:** Python 3.9+ and `git`.
+
+### macOS
 
 ```bash
+# 0. Install Python 3 if you don't have it (Homebrew: https://brew.sh)
+brew install python git
+
 # 1. Clone
 git clone https://github.com/ramezian1/System-Health-Monitor.git
 cd System-Health-Monitor
 
 # 2. Create and activate a virtual environment
-python -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
+python3 -m venv venv
+source venv/bin/activate
 
 # 3. Install dependencies
 pip install -r requirements.txt
 ```
+
+> On macOS, `psutil` cannot read CPU **temperature**, so that field is simply omitted —
+> everything else (CPU %, per-core, RAM, disk, network, processes) works normally.
+
+### Linux (Debian / Ubuntu / Raspberry Pi OS)
+
+```bash
+# 0. Install Python 3 + venv if needed
+sudo apt update && sudo apt install -y python3 python3-venv python3-pip git
+
+# 1. Clone
+git clone https://github.com/ramezian1/System-Health-Monitor.git
+cd System-Health-Monitor
+
+# 2. Create and activate a virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# 3. Install dependencies
+pip install -r requirements.txt
+```
+
+> On Fedora/RHEL use `sudo dnf install python3 python3-pip git`; on Arch use
+> `sudo pacman -S python git`. CPU temperature is available on Linux where the kernel
+> exposes sensors.
+
+To leave the virtual environment later, run `deactivate`.
 
 ## Usage
 
