@@ -53,9 +53,41 @@ System-Health-Monitor/
 
 ---
 
+## Prerequisites
+
+Before you start, make sure these are installed and ready:
+
+| Tool | Version | Why you need it | Download |
+|---|---|---|---|
+| **Python** | 3.9 or newer | Runs the app | [python.org/downloads](https://www.python.org/downloads/) |
+| **pip** | bundled with Python | Installs the Python dependencies | included with Python 3.4+ |
+| **Git** | any recent version | Clones the repository | [git-scm.com/downloads](https://git-scm.com/downloads) |
+| **A modern web browser** | current | Views the live dashboard | [Chrome](https://www.google.com/chrome/) · [Firefox](https://www.mozilla.org/firefox/) · [Edge](https://www.microsoft.com/edge) · Safari (built in) |
+
+**Also good to know:**
+
+- **Internet connection** — the dashboard loads Chart.js, the Socket.IO client, and the
+  Inter font from public CDNs at runtime, so the device viewing it needs internet access.
+- **Verify your install** before continuing:
+  ```bash
+  python --version    # or: python3 --version   → should print 3.9+
+  pip --version
+  git --version
+  ```
+  On Windows, if `python` opens the Microsoft Store, install Python from the link above and
+  re-open your terminal.
+- **For the Raspberry Pi deployment** you'll additionally need a Raspberry Pi running
+  Raspberry Pi OS (or any Linux) with terminal/SSH access — see the
+  [Raspberry Pi section](#raspberry-pi-recommended--monitors-the-pi-itself-24-7).
+
+> Don't have Python or Git yet? The OS-specific setup steps below include one-line install
+> commands (Homebrew, apt, winget) that fetch them for you.
+
+---
+
 ## Setup
 
-**Requirements:** Python 3.9+ and `git`.
+**Requirements:** Python 3.9+ and `git` (see [Prerequisites](#prerequisites) above).
 
 ### macOS
 
