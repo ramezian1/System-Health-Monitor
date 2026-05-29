@@ -91,6 +91,18 @@ Before you start, make sure these are installed and ready:
 
 **Requirements:** Python 3.9+ and `git` (see [Prerequisites](#prerequisites) above).
 
+### Quick start (one-click launchers)
+
+Already downloaded the project? These scripts do everything for you — set up the virtual
+environment, install all dependencies, then start the dashboard and open it in your browser.
+The first run does the full setup; later runs just launch.
+
+- **Windows:** double-click **`start.bat`** (it will even install Python via `winget` if it's missing)
+- **macOS / Linux:** run **`./start.sh`** in a terminal (run `chmod +x start.sh` once if needed)
+
+Prefer to do it by hand, or want to know what's happening under the hood? Follow the
+OS-specific steps below.
+
 ### macOS
 
 ```bash
