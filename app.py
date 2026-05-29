@@ -1,3 +1,4 @@
+import os
 import time
 import sqlite3
 import logging
@@ -216,6 +217,16 @@ def on_disconnect():
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
+    if config.USING_DEFAULT_CREDENTIALS:
+        log.warning(
+            "Using default login (admin/admin). Set DASHBOARD_USERNAME and "
+            "DASHBOARD_PASSWORD before exposing this app."
+        )
+    if "SECRET_KEY" not in os.environ:
+        log.warning(
+            "SECRET_KEY not set; using a random key (sessions reset on restart). "
+            "Set SECRET_KEY for a stable production deployment."
+        )
     _init_db()
     # Prime the psutil rate counters so first reading isn't zero
     monitor.collect()
