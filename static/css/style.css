@@ -310,6 +310,19 @@ tbody td { padding: .45rem .6rem; }
 /* ── History ────────────────────────────────────────────── */
 .history-card canvas { max-height: 220px; }
 
+/* ── Footer ─────────────────────────────────────────────── */
+.app-footer {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: .78rem;
+  padding: .5rem 0 .25rem;
+}
+.login-copyright {
+  margin-top: 1.5rem;
+  font-size: .72rem;
+  color: var(--text-muted);
+}
+
 /* ── Login ──────────────────────────────────────────────── */
 .login-page {
   display: flex;
