@@ -93,10 +93,13 @@ deployment so you never commit secrets.
 
 | Setting | Env var | Default | Purpose |
 |---|---|---|---|
-| Secret key | `SECRET_KEY` | `dev-secret-key-change-in-prod` | Flask session signing — **set this in production** |
+| Secret key | `SECRET_KEY` | random per startup | Flask session signing. Auto-generated if unset (sessions reset on restart) — **set this in production** for stable sessions |
 | Username | `DASHBOARD_USERNAME` | `admin` | Login username |
 | Password | `DASHBOARD_PASSWORD` | `admin` | Login password |
 | Database path | `DB_PATH` | `monitor.db` | SQLite history/alerts store |
+
+> On startup the app logs a warning if you're still using the default `admin` / `admin`
+> login or haven't set a `SECRET_KEY`, so insecure deployments are easy to spot.
 
 Alert thresholds (percent) are defined directly in `config.py`:
 
