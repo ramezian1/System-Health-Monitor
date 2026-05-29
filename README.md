@@ -100,6 +100,31 @@ pip install -r requirements.txt
 > `sudo pacman -S python git`. CPU temperature is available on Linux where the kernel
 > exposes sensors.
 
+### Windows
+
+Run these in **PowerShell**:
+
+```powershell
+# 0. Install Python 3 + git if needed (or download from python.org / git-scm.com)
+winget install Python.Python.3 Git.Git
+
+# 1. Clone
+git clone https://github.com/ramezian1/System-Health-Monitor.git
+cd System-Health-Monitor
+
+# 2. Create and activate a virtual environment
+python -m venv venv
+venv\Scripts\Activate.ps1        # Command Prompt instead: venv\Scripts\activate.bat
+
+# 3. Install dependencies
+pip install -r requirements.txt
+```
+
+> If PowerShell blocks `Activate.ps1` with a script-execution error, allow signed local
+> scripts for your user once: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, then
+> retry. Like macOS, `psutil` cannot read CPU **temperature** on Windows, so that field is
+> omitted; all other metrics work. (The `yes > /dev/null` load test below is Unix-only.)
+
 To leave the virtual environment later, run `deactivate`.
 
 ## Usage
